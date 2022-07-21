@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Testing min-width and max-width</title>
+    <style type="text/css">
+		body {
+		  margin: 0;
+		  padding: 0;
+		  overflow: hidden;
+		}
+		#container{
+			display:flex;
+			justify-content: center;
+			
+		}
+		@-webkit-keyframes Rainbow {
+			0% {
+			  background-position: 94% 0%; }
+			50% {
+			  background-position: 7% 100%; }
+			100% {
+			  background-position: 94% 0%; } }
+		#cnv{
+			background: linear-gradient(225deg, #ffabab, #ffdaab, #ddffab, #abe4ff, #d9abff);
+ 			background-size: 300% 300%;
+ 			box-sizing: border-box;
+ 			display: table;
+ 			height: 100vh;
+ 			margin: 0;
+ 			position: relative;
+ 			width: 100vw;
+ 			-webkit-animation: Rainbow 25s ease infinite;
+ 			-moz-animation: Rainbow 25s ease infinite;
+ 			animation: Rainbow 25s ease infinite;
+		}
+    </style>
+
+  </head>
+<body>
+
+  <div id="container">
+    <canvas id="cnv"></canvas>
+    <script type="text/javascript" charset="utf-8">
+		cnv = document.getElementById("cnv");
+		cnv.width = 1000;
+		cnv.height = 1000;
+		ctx = cnv.getContext("2d");
+		ctx.font = "bold 120px sans-serif";
+		text = "Joyeux Anniversaire"
+
+		function arcWrite(text, centerX, centerY, radius, up) {
+			startAngle = (up ? -1 : 1) * Math.PI / 2 * ( 1 - 1 / text.length)
+			const a = (up ? 1 : -1) * Math.PI / text.length
+			const Y = (up ? -1 : 1) * radius
+
+			ctx.translate(centerX, centerY)
+			ctx.rotate(startAngle)
+			for (i = 0; i < text.length; i++) {
+				ctx.fillText(text[i], 0, Y);
+				ctx.rotate(a);
+			}
+			ctx.resetTransform()
+		}
+
+		function printImage(img, sx, sy, sw, sh, x, y, w, h, angle) {
+			w = img.width
+			h = img.height
+			ctx.translate(x - w/2, y - h/2)
+			ctx.rotate(angle)
+			ctx.drawImage(img, sx, sy, sw, sh, -w/2, -h/2, w, h)
+			ctx.resetTransform()
+		}
+
+		arcWrite("Joyeux", 200, 200, 1000, true);
+		arcWrite("Anniversaire", 200, 200, 1000, false);
+
+		img = new Image()
+		img.src = "only_hugo_head.png"
+		img.onload = () => {
+			w = img.width
+			h = img.height
+			_cpt = 0;
+			setInterval(() => {
+				ctx.clearRect(0, 0, cnv.width, cnv.height);
+				arcWrite("Joyeux", cnv.width/2, cnv.height/2, 400, true);
+				arcWrite("Anniversaire", cnv.width/2, cnv.height/2, 400, false);
+				printImage(img, 0, 0, w, h, 700, 700, w/10, h/10, _cpt * Math.PI / 30)
+				_cpt++;
+			}, 100)
+		}
+
+    </script>
+  </div>
+</body>
+</html>
